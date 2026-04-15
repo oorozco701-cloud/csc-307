@@ -38,11 +38,19 @@ function MyApp() {
     setCharacters(updated);
   }
 
-  function updateList(person) {
+ function updateList(person) {
   postUser(person)
     .then((response) => {
       if (response.status === 201) {
-        setCharacters([...characters, person]);
+        return response.json();
+      } else {
+        console.log("Failed to create user");
+        return null;
+      }
+    })
+    .then((createdUser) => {
+      if (createdUser) {
+        setCharacters([...characters, createdUser]);
       }
     })
     .catch((error) => {
