@@ -31,12 +31,22 @@ function MyApp() {
       });
   }, []);
 
-  function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
+  function removeOneCharacter(id) {
+  deleteUser(id)
+    .then((response) => {
+      if (response.status === 204) {
+        const updated = characters.filter((character) => {
+          return character.id !== id;
+        });
+        setCharacters(updated);
+      } else if (response.status === 404) {
+        console.log("User not found.");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
-    setCharacters(updated);
-  }
+}
 
  function updateList(person) {
   postUser(person)
@@ -56,6 +66,14 @@ function MyApp() {
     .catch((error) => {
       console.log(error);
     });
+}
+
+function deleteUser(id) {
+  const promise = fetch(`http://localhost:8000/users/${id}`, {
+    method: "DELETE",
+  });
+
+  return promise;
 }
 
   return (
